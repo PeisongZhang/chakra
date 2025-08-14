@@ -42,7 +42,7 @@ void ETFeeder::freeChildrenNodes(const NodeId& node_id) {
   this->dependancy_resolver.finish_node(node_id);
 }
 
-uint64_t ETFeeder::_operator_id_cnt = 0;
+uint64_t ETFeeder::_feeder_id_cnt = 0;
 Cache<std::tuple<ETFeederId, NodeId>, ChakraNode> ETFeeder::_node_cache(
     DEFAULT_ETFEEDER_CACHE_SIZE);
 
@@ -73,7 +73,7 @@ void ETFeeder::build_index_dependancy_cache() {
 
 std::shared_ptr<const ChakraNode> ETFeeder::get_raw_chakra_node(
     NodeId node_id) {
-  auto key = std::make_tuple(this->_operator_id, node_id);
+  auto key = std::make_tuple(this->_feeder_id, node_id);
   auto node = ETFeeder::_node_cache.get_or_null_locked(key);
   if (node) {
     // hit
@@ -115,4 +115,8 @@ void ETFeeder::graph_sanity_check() {
           "Node " + std::to_string(node) +
           " in all_dep graph, but not found in index, file might be corrupted");
   }
+}
+
+const uint64_t& ETFeeder::feeder_id() const {
+  return this->_feeder_id;
 }

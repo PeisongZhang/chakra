@@ -33,7 +33,7 @@ class ETFeeder {
   ChakraGlobalMetadata global_metadata;
   ETFeeder(const std::string& file_path)
       : chakra_file(file_path, std::ios::binary | std::ios::in | std::ios::app),
-        _operator_id(_operator_id_cnt++),
+        _feeder_id(_feeder_id_cnt++),
         dependancy_resolver(RESOLVE_DATA_DEPS, RESOLVE_CTRL_DEPS) {
     if (!chakra_file.is_open())
       throw std::runtime_error("Failed to open file " + file_path);
@@ -61,11 +61,13 @@ class ETFeeder {
   void addNode(std::shared_ptr<ETFeederNode> node);
   void removeNode(const NodeId& node_id);
 
+  const uint64_t& feeder_id() const;
+
  private:
   std::ifstream chakra_file;
 
-  static uint64_t _operator_id_cnt;
-  uint64_t _operator_id;
+  static uint64_t _feeder_id_cnt;
+  uint64_t _feeder_id;
 
   // shared global cache for storing chakra msgs.
   static Cache<std::tuple<ETFeederId, NodeId>, ChakraNode> _node_cache;

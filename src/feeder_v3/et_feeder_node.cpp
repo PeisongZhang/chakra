@@ -26,10 +26,7 @@ const ChakraAttr ETFeederNode::get_attr_msg(
   for (auto& attr : node->attr())
     if (attr.name() == attr_name)
       return attr;
-  throw std::runtime_error(
-      "Attribute " + attr_name + " not found in node " +
-      std::to_string(this->node_id) +
-      " feeder->id=" + std::to_string(this->feeder._operator_id));
+  this->complain_attr_not_found(attr_name);
 }
 
 bool ETFeederNode::get_attr_msg(
@@ -158,4 +155,12 @@ std::string ETFeederNode::get_outputs_types(const std::string& default_) const {
     return node->outputs().types();
   }
   return default_;
+}
+
+[[noreturn]] void ETFeederNode::complain_attr_not_found(
+    const std::string& attr_name) const {
+  throw std::runtime_error(
+      "Attribute " + attr_name + " not found in node " +
+      std::to_string(this->node_id) +
+      " feeder->id=" + std::to_string(this->feeder.feeder_id()));
 }

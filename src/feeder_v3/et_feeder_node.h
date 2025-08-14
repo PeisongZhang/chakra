@@ -133,6 +133,10 @@ class ETFeederNode {
       throw std::bad_cast();
     }
   };
+  // have to use this to help later template function access feeder field,
+  // without knowing whole def of etfeeder
+  [[noreturn]] void complain_attr_not_found(const std::string& attr_name) const;
+
   // ETFeederNode only store minimal thing to reduce memory usage.
   ETFeeder& feeder;
   NodeId node_id;
@@ -211,10 +215,7 @@ T ETFeederNode::get_attr(const std::string& attr_name) const {
     const auto attr = this->get_attr_msg(attr_name);
     return this->get_attr<T>(attr, DEFAULT_STRICT_TYPING);
   }
-  throw std::runtime_error(
-      "Attribute " + attr_name + " not found in node " +
-      std::to_string(this->node_id) +
-      " feeder->id=" + std::to_string(this->feeder._operator_id));
+  this->complain_attr_not_found(attr_name);
 }
 template <>
 inline ChakraAttr ETFeederNode::get_attr<ChakraAttr>(
