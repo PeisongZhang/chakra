@@ -5,7 +5,14 @@
 
 namespace Chakra {
 namespace FeederV3 {
-using NodeId = uint64_t;
+// §24.9 / M2: Narrow NodeId from uint64_t to uint32_t.  Empirically all STG
+// workloads we support (llama/qwen/gpt_39b including B1536) have max node id
+// under 400K; u32 range is 4B, so overflow is extremely unlikely.  Narrowing
+// halves the size of NodeId storage in the dependency graph (adjacency
+// vectors, free-node sets, per-node index map) → ~15-20% additional RSS
+// reduction on large workloads.  If a future workload exceeds u32, either
+// widen this back to u64 or introduce a compile-time option.
+using NodeId = uint32_t;
 using ETFeederId = uint64_t;
 using ChakraNode = ChakraProtoMsg::Node;
 using ChakraGlobalMetadata = ChakraProtoMsg::GlobalMetadata;
