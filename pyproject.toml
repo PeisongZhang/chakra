@@ -1,5 +1,8 @@
 [build-system]
-requires = ["setuptools", "setuptools-grpc"]
+requires = [ "setuptools>=61",
+  "wheel",
+  "setuptools-grpc",
+  "grpcio-tools"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,7 +15,7 @@ authors = [
     {name = "MLCommons", email = "chakra@mlcommons.org"},
 ]
 dependencies = [
-    "protobuf==5.*",
+    "protobuf",
     "graphviz",
     "networkx",
     "pydot",
